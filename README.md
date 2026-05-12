@@ -52,3 +52,7 @@ New accounts and new shipments are posted to the fake API served from `server/db
 - `src/app/coldtrack/presentation`: feature routes and Angular Material views.
 - `public/i18n`: English and Spanish translation files.
 - `server/db.js`: fake API seed data.
+
+## Git Flow
+
+The project uses `main` as the stable branch and `develop` as the integration branch for team contributions. New work should be created from `develop` using feature branches, and completed changes should be merged back into `develop` through pull requests.
