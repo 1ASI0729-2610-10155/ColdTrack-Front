@@ -1,0 +1,216 @@
+@if (!authStore.isAuthenticated()) {
+  <main class="auth-page" aria-labelledby="auth-title">
+    <div class="auth-language" [attr.aria-label]="'accessibility.languageSelector' | translate">
+      <mat-button-toggle-group [value]="currentLanguage()" (change)="useLanguage($event.value)" [attr.aria-label]="'accessibility.selectLanguage' | translate">
+        <mat-button-toggle value="en">EN</mat-button-toggle>
+        <mat-button-toggle value="es">ES</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <section class="auth-hero">
+      <img src="logo-coldtrack.png" alt="ColdTrack logo" class="auth-logo">
+      <h1 id="auth-title">{{ (authMode() === 'sign-in' ? 'auth.welcome' : 'auth.createTitle') | translate }}</h1>
+      <p>{{ (authMode() === 'sign-in' ? 'auth.subtitle' : 'auth.createSubtitle') | translate }}</p>
+    </section>
+
+    @if (authMode() === 'sign-in') {
+      <form class="auth-card" [formGroup]="loginForm" (ngSubmit)="signIn()" aria-label="Sign in form">
+        <h2>{{ 'auth.signIn' | translate }}</h2>
+        <label for="email">{{ 'auth.email' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">mail</mat-icon>
+          <input id="email" formControlName="email" type="text" inputmode="email" autocomplete="email" [placeholder]="'auth.emailPlaceholder' | translate" aria-required="true">
+        </div>
+        <label for="password">{{ 'auth.password' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+          <input id="password" formControlName="password" type="password" autocomplete="current-password" placeholder="password" aria-required="true">
+        </div>
+        <a class="forgot-link" href="#" aria-label="Forgot password">{{ 'auth.forgot' | translate }}</a>
+        @if (authStore.error()) {
+          <p class="form-error" role="alert">{{ authStore.error()! | translate }}</p>
+        }
+        <button mat-flat-button color="primary" class="primary-action" type="submit" [disabled]="authStore.loading()">
+          {{ 'auth.signIn' | translate }}
+        </button>
+        <p class="switch-copy">
+          {{ 'auth.noAccount' | translate }}
+          <button type="button" class="link-button" (click)="authMode.set('sign-up')">{{ 'auth.register' | translate }}</button>
+        </p>
+        <p class="demo-box"><strong>Demo:</strong> test@test.com / password</p>
+      </form>
+    } @else {
+      <form class="auth-card" [formGroup]="registerForm" (ngSubmit)="signUp()" aria-label="Create account form">
+        <label for="fullName">{{ 'auth.fullName' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">person</mat-icon>
+          <input id="fullName" formControlName="fullName" type="text" autocomplete="name" [placeholder]="'auth.fullNamePlaceholder' | translate" aria-required="true">
+        </div>
+        <label for="registerEmail">{{ 'auth.email' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">mail</mat-icon>
+          <input id="registerEmail" formControlName="email" type="text" inputmode="email" autocomplete="email" [placeholder]="'auth.emailPlaceholder' | translate" aria-required="true">
+        </div>
+        <label for="role">{{ 'auth.role' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">business_center</mat-icon>
+          <select id="role" formControlName="role" aria-required="true">
+            <option value="LOGISTICS_ADMIN">{{ 'roles.LOGISTICS_ADMIN' | translate }}</option>
+            <option value="DRIVER">{{ 'roles.DRIVER' | translate }}</option>
+            <option value="QUALITY_SUPERVISOR">{{ 'roles.QUALITY_SUPERVISOR' | translate }}</option>
+          </select>
+        </div>
+        <label for="registerPassword">{{ 'auth.password' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+          <input id="registerPassword" formControlName="password" type="password" autocomplete="new-password" placeholder="password" aria-required="true">
+        </div>
+        <label for="confirmPassword">{{ 'auth.confirmPassword' | translate }}</label>
+        <div class="field-shell">
+          <mat-icon aria-hidden="true">lock</mat-icon>
+          <input id="confirmPassword" formControlName="confirmPassword" type="password" autocomplete="new-password" placeholder="password" aria-required="true">
+        </div>
+        <button mat-flat-button color="primary" class="primary-action" type="submit" [disabled]="authStore.loading()">
+          {{ 'auth.createAccount' | translate }}
+        </button>
+        <p class="switch-copy">
+          {{ 'auth.hasAccount' | translate }}
+          <button type="button" class="link-button" (click)="authMode.set('sign-in')">{{ 'auth.signIn' | translate }}</button>
+        </p>
+      </form>
+    }
+  </main>
+} @else {
+  <div class="app-shell">
+    <mat-toolbar class="topbar" aria-label="Main toolbar">
+      <img src="logo-coldtrack.png" alt="ColdTrack logo" class="toolbar-logo">
+      <nav class="nav-list" aria-label="Primary navigation">
+        @for (item of navigationItems(); track item.view) {
+          <button mat-button type="button" [class.active]="currentView() === item.view" (click)="setView(item.view)" [attr.aria-current]="currentView() === item.view ? 'page' : null">
+            <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+            {{ item.label | translate }}
+            @if (item.view === 'alerts' && store.activeAlerts().length > 0) {
+              <span class="notification-badge" [attr.aria-label]="'dashboard.activeAlerts' | translate">{{ store.activeAlerts().length }}</span>
+            }
+          </button>
+        }
+      </nav>
+      <span class="topbar-spacer"></span>
+      <mat-button-toggle-group class="toolbar-language" [value]="currentLanguage()" (change)="useLanguage($event.value)" [attr.aria-label]="'accessibility.selectLanguage' | translate">
+        <mat-button-toggle value="en">EN</mat-button-toggle>
+        <mat-button-toggle value="es">ES</mat-button-toggle>
+      </mat-button-toggle-group>
+      <button mat-button type="button" class="logout-button" (click)="signOut()" [attr.aria-label]="'navigation.signOut' | translate">
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        {{ 'navigation.signOut' | translate }}
+      </button>
+    </mat-toolbar>
+
+    <main class="content" aria-live="polite">
+      @if (currentView() === 'dashboard') {
+        <section aria-labelledby="dashboard-title">
+          <div class="page-heading">
+            <div>
+              <h1 id="dashboard-title">{{ 'dashboard.title' | translate }}</h1>
+              <p>{{ 'dashboard.subtitle' | translate }}</p>
+            </div>
+            <div class="heading-actions">
+              <button mat-stroked-button type="button"><mat-icon aria-hidden="true">download</mat-icon>{{ 'actions.export' | translate }}</button>
+              <button mat-flat-button color="primary" type="button" (click)="setView('new-shipment')"><mat-icon aria-hidden="true">add</mat-icon>{{ 'navigation.newShipment' | translate }}</button>
+            </div>
+          </div>
+
+          <section class="alert-panel" aria-labelledby="active-alerts-title">
+            <div class="section-title">
+              <h2 id="active-alerts-title"><mat-icon aria-hidden="true">notifications</mat-icon>{{ 'dashboard.activeAlerts' | translate }}</h2>
+              <button class="link-button" type="button" (click)="setView('alerts')">{{ 'actions.viewAll' | translate }}</button>
+            </div>
+            @for (alert of store.activeAlerts().slice(0, 2); track alert.id) {
+              <article class="alert-card" [class.warning]="alert.severity === 'WARNING'" role="status">
+                <strong>{{ alert.message }}</strong>
+                <span>{{ 'labels.shipment' | translate }}: {{ alert.shipmentId }}</span>
+              </article>
+            }
+          </section>
+
+          <div class="metric-grid">
+            <article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">inventory_2</mat-icon></span><small>{{ 'metrics.total' | translate }}</small><strong>{{ store.shipments().length }}</strong><span>{{ 'metrics.shipmentsRegistered' | translate }}</span></article>
+            <article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">local_shipping</mat-icon></span><small>{{ 'metrics.active' | translate }}</small><strong>{{ store.activeShipments().length }}</strong><span>{{ 'metrics.inRoute' | translate }}</span></article>
+            <article class="metric-card"><span class="icon-box green"><mat-icon aria-hidden="true">check_circle</mat-icon></span><small>{{ 'metrics.completed' | translate }}</small><strong>{{ store.completedShipments().length }}</strong><span>{{ 'metrics.delivered' | translate }}</span></article>
+          </div>
+
+          <section class="data-panel" aria-labelledby="active-shipments-title">
+            <div class="section-title">
+              <h2 id="active-shipments-title">{{ 'dashboard.activeShipments' | translate }}</h2>
+              <input class="search-input" type="search" [placeholder]="'search.shipment' | translate" (input)="shipmentSearch.set($any($event.target).value)" aria-label="Search shipment">
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>ID</th><th>{{ 'labels.destination' | translate }}</th><th>{{ 'labels.status' | translate }}</th><th>{{ 'labels.driver' | translate }}</th><th>{{ 'labels.temperature' | translate }}</th><th>{{ 'labels.humidity' | translate }}</th><th>{{ 'labels.estimatedArrival' | translate }}</th><th>{{ 'labels.actions' | translate }}</th></tr></thead>
+                <tbody>
+                  @for (shipment of filteredShipments(); track trackById($index, shipment)) {
+                    <tr>
+                      <td>{{ shipment.id }}</td><td>{{ shipment.destination }}</td>
+                      <td><span class="pill" [class.success]="isCompleted(shipment.status)" [class.warning]="shipment.status === 'PENDING'">{{ shipmentStatusKey(shipment.status) | translate }}</span></td>
+                      <td>{{ shipment.driver }}</td><td>{{ shipment.temperature ?? '-' }}@if (shipment.temperature !== null) {°C}</td><td>{{ shipment.humidity ?? '-' }}@if (shipment.humidity !== null) {%}</td><td>{{ shipment.estimatedArrivalAt }}</td><td><button class="link-button" type="button">{{ 'actions.details' | translate }}</button></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      }
+
+      @if (currentView() === 'new-shipment') {
+        <section aria-labelledby="new-shipment-title">
+          <div class="page-heading compact"><div><h1 id="new-shipment-title">{{ 'shipment.title' | translate }}</h1><p>{{ 'shipment.subtitle' | translate }}</p></div></div>
+          <form class="form-panel" [formGroup]="shipmentForm" (ngSubmit)="createShipment()" aria-label="New shipment form">
+            <div class="form-grid">
+              <label>{{ 'labels.destination' | translate }}<input formControlName="destination" type="text" [placeholder]="'shipment.destinationPlaceholder' | translate"></label>
+              <label>{{ 'labels.assignedDriver' | translate }}<select formControlName="driver"><option value="">{{ 'shipment.driverPlaceholder' | translate }}</option>@for (driver of drivers(); track driver) {<option [value]="driver">{{ driver }}</option>}</select></label>
+              <label class="wide">{{ 'shipment.cargoDescription' | translate }}<textarea formControlName="cargoDescription" rows="4" [placeholder]="'shipment.cargoPlaceholder' | translate"></textarea></label>
+              <label>{{ 'shipment.departureAt' | translate }}<input formControlName="departureAt" type="datetime-local"></label>
+              <label>{{ 'shipment.estimatedArrivalAt' | translate }}<input formControlName="estimatedArrivalAt" type="datetime-local"></label>
+            </div>
+            <p class="info-note"><strong>{{ 'labels.note' | translate }}:</strong> {{ 'shipment.note' | translate }}</p>
+            <div class="form-actions"><button mat-flat-button color="primary" type="submit">{{ 'shipment.register' | translate }}</button><button mat-stroked-button type="button" (click)="setView('dashboard')">{{ 'actions.cancel' | translate }}</button></div>
+          </form>
+        </section>
+      }
+
+      @if (currentView() === 'sensors') {
+        <section aria-labelledby="sensors-title">
+          <div class="page-heading"><div><h1 id="sensors-title">{{ 'sensors.title' | translate }}</h1><p>{{ 'sensors.subtitle' | translate }}</p></div></div>
+          <form class="inline-create" [formGroup]="sensorForm" (ngSubmit)="createSensor()" aria-label="Create sensor form">
+            <input formControlName="id" type="text" placeholder="SENS-A999" aria-label="Sensor id">
+            <button mat-flat-button color="primary" type="submit"><mat-icon aria-hidden="true">add</mat-icon>{{ 'sensors.register' | translate }}</button>
+          </form>
+          <div class="metric-grid"><article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">device_thermostat</mat-icon></span><small>{{ 'metrics.total' | translate }}</small><strong>{{ store.sensors().length }}</strong><span>{{ 'sensors.registered' | translate }}</span></article><article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">link</mat-icon></span><small>{{ 'metrics.active' | translate }}</small><strong>{{ store.sensors().length - store.availableSensors().length }}</strong><span>{{ 'sensors.assigned' | translate }}</span></article><article class="metric-card"><span class="icon-box green"><mat-icon aria-hidden="true">check_circle</mat-icon></span><small>{{ 'sensors.free' | translate }}</small><strong>{{ store.availableSensors().length }}</strong><span>{{ 'sensors.available' | translate }}</span></article></div>
+          <section class="data-panel"><div class="section-title"><h2>{{ 'sensors.list' | translate }}</h2><input class="search-input" type="search" [placeholder]="'search.sensor' | translate" (input)="sensorSearch.set($any($event.target).value)" aria-label="Search sensor"></div><div class="table-scroll"><table><thead><tr><th>{{ 'labels.sensorId' | translate }}</th><th>{{ 'labels.status' | translate }}</th><th>{{ 'labels.assignedShipment' | translate }}</th><th>{{ 'labels.lastReading' | translate }}</th><th>{{ 'labels.temperature' | translate }}</th><th>{{ 'labels.humidity' | translate }}</th><th>{{ 'labels.actions' | translate }}</th></tr></thead><tbody>@for (sensor of filteredSensors(); track trackById($index, sensor)) {<tr><td>{{ sensor.id }}</td><td><span class="pill" [class.success]="sensor.status === 'AVAILABLE'">{{ ('status.sensor.' + sensor.status) | translate }}</span></td><td>{{ sensor.assignedShipmentId ?? '-' }}</td><td>{{ sensor.lastReadingAt ?? '-' }}</td><td>{{ sensor.temperature ?? '-' }}</td><td>{{ sensor.humidity ?? '-' }}</td><td><button class="link-button" type="button" [disabled]="sensor.status === 'ASSIGNED'">{{ sensor.status === 'ASSIGNED' ? ('sensors.inUse' | translate) : ('sensors.link' | translate) }}</button></td></tr>}</tbody></table></div></section>
+        </section>
+      }
+
+      @if (currentView() === 'alerts') {
+        <section aria-labelledby="alerts-title">
+          <div class="page-heading"><div><h1 id="alerts-title">{{ 'alerts.title' | translate }}</h1><p>{{ 'alerts.subtitle' | translate }}</p></div><button mat-flat-button color="primary"><mat-icon aria-hidden="true">download</mat-icon>{{ 'actions.exportReport' | translate }}</button></div>
+          <div class="metric-grid"><article class="metric-card"><span class="icon-box red"><mat-icon aria-hidden="true">notifications</mat-icon></span><small>{{ 'metrics.total' | translate }}</small><strong>{{ store.alerts().length }}</strong><span>{{ 'alerts.registered' | translate }}</span></article><article class="metric-card"><span class="icon-box red"><mat-icon aria-hidden="true">warning</mat-icon></span><small>{{ 'metrics.active' | translate }}</small><strong>{{ store.activeAlerts().length }}</strong><span>{{ 'alerts.requireAttention' | translate }}</span></article><article class="metric-card"><span class="icon-box red"><mat-icon aria-hidden="true">report</mat-icon></span><small>{{ 'alerts.critical' | translate }}</small><strong>{{ store.criticalAlerts().length }}</strong><span>{{ 'alerts.highPriority' | translate }}</span></article></div>
+          <section class="data-panel"><div class="filter-row"><input class="search-input stretch" type="search" [placeholder]="'search.alert' | translate" (input)="alertSearch.set($any($event.target).value)" aria-label="Search alert"><select (change)="selectedSeverity.set($any($event.target).value)" aria-label="Filter severity"><option value="ALL">{{ 'filters.allSeverities' | translate }}</option><option value="CRITICAL">{{ 'severity.CRITICAL' | translate }}</option><option value="WARNING">{{ 'severity.WARNING' | translate }}</option></select><select (change)="selectedAlertStatus.set($any($event.target).value)" aria-label="Filter alert status"><option value="ALL">{{ 'filters.allStatuses' | translate }}</option><option value="ACTIVE">{{ 'status.alert.ACTIVE' | translate }}</option><option value="RESOLVED">{{ 'status.alert.RESOLVED' | translate }}</option></select></div>@for (alert of filteredAlerts(); track trackById($index, alert)) {<article class="alert-row"><mat-icon aria-hidden="true">{{ alert.type === 'HUMIDITY' ? 'water_drop' : 'device_thermostat' }}</mat-icon><div><h3>{{ alert.id }} <span class="pill danger">{{ ('severity.' + alert.severity) | translate }}</span> <span class="pill" [class.success]="alert.status === 'RESOLVED'">{{ ('status.alert.' + alert.status) | translate }}</span></h3><p>{{ alert.message }}</p><small>{{ 'labels.shipment' | translate }}: {{ alert.shipmentId }} &nbsp; {{ 'labels.date' | translate }}: {{ alert.createdAt }} @if (alert.value) { &nbsp; {{ 'labels.value' | translate }}: {{ alert.value }} ({{ alert.threshold }}) }</small></div></article>}</section>
+        </section>
+      }
+
+      @if (currentView() === 'history') {
+        <section aria-labelledby="history-title">
+          <div class="page-heading"><div><h1 id="history-title">{{ 'history.title' | translate }}</h1><p>{{ 'history.subtitle' | translate }}</p></div><button mat-flat-button color="primary"><mat-icon aria-hidden="true">download</mat-icon>{{ 'actions.exportReport' | translate }}</button></div>
+          <div class="metric-grid"><article class="metric-card"><span class="icon-box green"><mat-icon aria-hidden="true">inventory_2</mat-icon></span><small>{{ 'metrics.total' | translate }}</small><strong>{{ store.completedShipments().length }}</strong><span>{{ 'history.completedShipments' | translate }}</span></article><article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">device_thermostat</mat-icon></span><small>{{ 'history.average' | translate }}</small><strong>{{ averageTemperature() }}°C</strong><span>{{ 'history.averageTemp' | translate }}</span></article><article class="metric-card"><span class="icon-box amber"><mat-icon aria-hidden="true">inventory_2</mat-icon></span><small>{{ 'metrics.total' | translate }}</small><strong>{{ store.alerts().length }}</strong><span>{{ 'history.generatedAlerts' | translate }}</span></article></div>
+          <section class="data-panel"><div class="section-title"><input class="search-input stretch" type="search" [placeholder]="'search.history' | translate" (input)="historySearch.set($any($event.target).value)" aria-label="Search history"></div><div class="table-scroll"><table><thead><tr><th>ID</th><th>{{ 'labels.destination' | translate }}</th><th>{{ 'labels.driver' | translate }}</th><th>{{ 'labels.cargo' | translate }}</th><th>{{ 'shipment.departureAt' | translate }}</th><th>{{ 'history.arrivalDate' | translate }}</th><th>{{ 'history.avgTemp' | translate }}</th><th>{{ 'labels.humidity' | translate }}</th><th>{{ 'navigation.alerts' | translate }}</th></tr></thead><tbody>@for (shipment of filteredHistory(); track trackById($index, shipment)) {<tr><td>{{ shipment.id }}</td><td>{{ shipment.destination }}</td><td>{{ shipment.driver }}</td><td>{{ shipment.cargoDescription }}</td><td>{{ shipment.departureAt }}</td><td>{{ shipment.estimatedArrivalAt }}</td><td>{{ shipment.temperature }}°C</td><td>{{ shipment.humidity }}%</td><td><span class="pill success">{{ store.alerts().length }}</span></td></tr>}</tbody></table></div></section>
+        </section>
+      }
+    </main>
+
+    <footer class="footer" aria-label="Application footer">
+      <span>{{ 'footer.copyright' | translate }}</span>
+      <span>{{ 'footer.developedBy' | translate }}</span>
+    </footer>
+  </div>
+}

@@ -1,0 +1,154 @@
+{
+  "actions": {
+    "cancel": "Cancel",
+    "details": "View details",
+    "export": "Export",
+    "exportReport": "Export report",
+    "viewAll": "View all"
+  },
+  "accessibility": {
+    "languageSelector": "Language selector",
+    "selectLanguage": "Select language"
+  },
+  "alerts": {
+    "critical": "Critical",
+    "highPriority": "High priority",
+    "registered": "Registered alerts",
+    "requireAttention": "Require attention",
+    "subtitle": "Monitor and manage system alerts",
+    "title": "Alert System"
+  },
+  "auth": {
+    "apiUnavailable": "The fake API is not available. Start it with npm run api.",
+    "confirmPassword": "Confirm Password",
+    "createAccount": "Create Account",
+    "createSubtitle": "Join the ColdTrack system",
+    "createTitle": "Create Account",
+    "email": "Email Address",
+    "emailPlaceholder": "you@email.com",
+    "forgot": "Forgot your password?",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Juan Perez",
+    "hasAccount": "Already have an account?",
+    "invalidCredentials": "Invalid credentials. Use the demo account or create a new one.",
+    "noAccount": "Don't have an account?",
+    "password": "Password",
+    "register": "Register",
+    "role": "Role",
+    "signIn": "Sign In",
+    "subtitle": "Shipment Management System",
+    "welcome": "Welcome to ColdTrack"
+  },
+  "dashboard": {
+    "activeAlerts": "Active Alerts",
+    "activeShipments": "Active Shipments",
+    "subtitle": "Manage and monitor all your shipments",
+    "title": "Shipment Dashboard"
+  },
+  "filters": {
+    "allSeverities": "All severities",
+    "allStatuses": "All statuses"
+  },
+  "footer": {
+    "copyright": "Copyright © 2026 ColdTrack. All rights reserved.",
+    "developedBy": "Developed by the HackRats team"
+  },
+  "history": {
+    "arrivalDate": "Arrival Date",
+    "average": "Average",
+    "averageTemp": "Average temperature",
+    "avgTemp": "Avg. Temp",
+    "completedShipments": "Completed shipments",
+    "generatedAlerts": "Generated alerts",
+    "subtitle": "Review all completed shipments",
+    "title": "Shipment History"
+  },
+  "labels": {
+    "actions": "Actions",
+    "assignedDriver": "Assigned Driver",
+    "assignedShipment": "Assigned Shipment",
+    "cargo": "Cargo",
+    "date": "Date",
+    "destination": "Destination",
+    "driver": "Driver",
+    "estimatedArrival": "Estimated Arrival",
+    "humidity": "Humidity",
+    "lastReading": "Last Reading",
+    "note": "Note",
+    "sensorId": "Sensor ID",
+    "shipment": "Shipment",
+    "status": "Status",
+    "temperature": "Temperature",
+    "value": "Value"
+  },
+  "metrics": {
+    "active": "Active",
+    "completed": "Completed",
+    "delivered": "Delivered",
+    "inRoute": "In route",
+    "shipmentsRegistered": "Registered shipments",
+    "total": "Total"
+  },
+  "navigation": {
+    "alerts": "Alerts",
+    "dashboard": "Dashboard",
+    "history": "History",
+    "newShipment": "New Shipment",
+    "sensors": "Sensors",
+    "signOut": "Sign Out"
+  },
+  "roles": {
+    "DRIVER": "Driver",
+    "LOGISTICS_ADMIN": "Logistics Admin",
+    "QUALITY_SUPERVISOR": "Quality Supervisor"
+  },
+  "search": {
+    "alert": "Search alerts...",
+    "history": "Search history...",
+    "sensor": "Search sensor...",
+    "shipment": "Search shipment..."
+  },
+  "sensors": {
+    "assigned": "Assigned sensors",
+    "available": "Available",
+    "free": "Free",
+    "inUse": "In use",
+    "link": "Link",
+    "list": "Sensor List",
+    "registered": "Registered sensors",
+    "register": "Register Sensor",
+    "subtitle": "Manage and link sensors to shipments",
+    "title": "Sensor Management"
+  },
+  "severity": {
+    "CRITICAL": "Critical",
+    "WARNING": "Warning"
+  },
+  "shipment": {
+    "cargoDescription": "Cargo Description",
+    "cargoPlaceholder": "Describe the shipment contents...",
+    "departureAt": "Departure Date",
+    "destinationPlaceholder": "Destination city",
+    "driverPlaceholder": "Select a driver",
+    "estimatedArrivalAt": "Estimated Arrival",
+    "note": "Sensors will be assigned in the next step. First register the basic shipment information.",
+    "register": "Register Shipment",
+    "subtitle": "Complete all fields to create a new shipment",
+    "title": "Register New Shipment"
+  },
+  "status": {
+    "alert": {
+      "ACTIVE": "Active",
+      "RESOLVED": "Resolved"
+    },
+    "sensor": {
+      "ASSIGNED": "Assigned",
+      "AVAILABLE": "Available"
+    },
+    "shipment": {
+      "COMPLETED": "Completed",
+      "IN_TRANSIT": "In Transit",
+      "PENDING": "Pending"
+    }
+  }
+}

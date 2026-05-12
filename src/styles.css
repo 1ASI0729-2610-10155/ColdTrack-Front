@@ -1,0 +1,45 @@
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #f4f8fc;
+  color: #071f3d;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.mat-icon {
+  direction: ltr;
+  display: inline-block;
+  font-family: 'Material Icons', sans-serif;
+  font-feature-settings: 'liga';
+  font-size: 24px;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  overflow: hidden;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+}
