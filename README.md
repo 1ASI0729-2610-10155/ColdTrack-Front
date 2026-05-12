@@ -52,3 +52,6 @@ New accounts and new shipments are posted to the fake API served from `server/db
 - `src/app/coldtrack/presentation`: feature routes and Angular Material views.
 - `public/i18n`: English and Spanish translation files.
 - `server/db.js`: fake API seed data.
+n## Fake 
+APIn
+The project uses a local json-server API to provide demo users, shipments, sensors, and alerts during development.
