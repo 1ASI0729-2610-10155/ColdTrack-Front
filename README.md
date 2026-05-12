@@ -1,4 +1,4 @@
-# ColdTrack Front
+ï»¿# ColdTrack Front
 
 ColdTrack Front is an Angular 21 web application for monitoring cold-chain shipments. It supports shipment registration, sensor management, active alerts, shipment history, authentication, and runtime language switching between English and Spanish.
 
@@ -52,5 +52,11 @@ New accounts and new shipments are posted to the fake API served from `server/db
 - `src/app/coldtrack/presentation`: feature routes and Angular Material views.
 - `public/i18n`: English and Spanish translation files.
 - `server/db.js`: fake API seed data.
-n## Project Setup Notesn
-Documentation updated by Mathias Augusto Aréchaga Saavedra to clarify the project setup workflow.
+
+## Project Setup Notes
+
+Documentation updated by Mathias Augusto Arechaga Saavedra to clarify the project setup workflow.
+
+## Internationalization
+
+ColdTrack includes English and Spanish translations through the public i18n files, allowing the interface to switch languages at runtime.
