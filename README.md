@@ -60,3 +60,7 @@ Documentation updated by Mathias Augusto Arechaga Saavedra to clarify the projec
 ## Internationalization
 
 ColdTrack includes English and Spanish translations through the public i18n files, allowing the interface to switch languages at runtime.
+
+## Git Flow
+
+The project uses `main` as the stable branch and `develop` as the integration branch for team contributions. New work should be created from `develop` using feature branches, and completed changes should be merged back into `develop` through pull requests.
