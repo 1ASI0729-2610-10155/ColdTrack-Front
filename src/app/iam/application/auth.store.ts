@@ -1,8 +1,8 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { finalize } from 'rxjs';
-import { UserEntity } from '../domain/model/user.entity';
+import { inject, Injectable, signal } from '@angular/core';
+import { finalize, switchMap } from 'rxjs';
 import { ColdtrackApiResource } from '../../coldtrack/infrastructure/coldtrack-api-resource';
 import { CreateUserRequest } from '../../coldtrack/infrastructure/requests';
+import { AuthSession } from '../infrastructure/auth-session';
 
 /**
  * @summary Signal-based authentication state for ColdTrack.
@@ -11,14 +11,14 @@ import { CreateUserRequest } from '../../coldtrack/infrastructure/requests';
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
   private readonly api = inject(ColdtrackApiResource);
-  private readonly currentUserSignal = signal<UserEntity | null>(null);
+  private readonly session = inject(AuthSession);
   private readonly loadingSignal = signal(false);
   private readonly errorSignal = signal<string | null>(null);
 
   /** Current logged-in user. */
-  readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly currentUser = this.session.currentUser;
   /** True when a user is logged in. */
-  readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
+  readonly isAuthenticated = this.session.isAuthenticated;
   /** Authentication loading flag. */
   readonly loading = this.loadingSignal.asReadonly();
   /** Last authentication error. */
@@ -32,18 +32,11 @@ export class AuthStore {
   signIn(email: string, password: string): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
-    this.api.findUsersByCredentials(email, password)
+    this.api.signIn(email, password)
       .pipe(finalize(() => this.loadingSignal.set(false)))
       .subscribe({
-        next: users => {
-          const user = users.at(0);
-          if (user) {
-            this.currentUserSignal.set(user);
-            return;
-          }
-          this.errorSignal.set('auth.invalidCredentials');
-        },
-        error: () => this.errorSignal.set('auth.apiUnavailable')
+        next: session => this.session.start(session),
+        error: () => this.errorSignal.set('auth.invalidCredentials')
       });
   }
 
@@ -54,16 +47,17 @@ export class AuthStore {
   signUp(request: CreateUserRequest): void {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
-    this.api.createUser(request)
+    this.api.signUp(request)
+      .pipe(switchMap(() => this.api.signIn(request.email, request.password)))
       .pipe(finalize(() => this.loadingSignal.set(false)))
       .subscribe({
-        next: user => this.currentUserSignal.set(user),
+        next: session => this.session.start(session),
         error: () => this.errorSignal.set('auth.apiUnavailable')
       });
   }
 
   /** Ends the current session. */
   signOut(): void {
-    this.currentUserSignal.set(null);
+    this.session.clear();
   }
 }

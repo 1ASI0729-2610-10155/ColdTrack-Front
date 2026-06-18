@@ -37,7 +37,7 @@ export class ColdtrackStore {
   /** Critical alerts. */
   readonly criticalAlerts = computed(() => this.alertsSignal().filter(alert => alert.severity === 'CRITICAL'));
 
-  /** Loads dashboard data from the fake API. */
+  /** Loads dashboard data from the backend API. */
   load(): void {
     this.loadingSignal.set(true);
     forkJoin({

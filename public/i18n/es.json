@@ -19,7 +19,7 @@
     "title": "Sistema de Alertas"
   },
   "auth": {
-    "apiUnavailable": "La fake API no esta disponible. Iniciala con npm run api.",
+    "apiUnavailable": "El servicio de ColdTrack no esta disponible temporalmente.",
     "confirmPassword": "Confirmar Contrasena",
     "createAccount": "Crear Cuenta",
     "createSubtitle": "Unete al sistema ColdTrack",
@@ -138,6 +138,7 @@
   },
   "status": {
     "alert": {
+      "ACKNOWLEDGED": "Reconocida",
       "ACTIVE": "Activa",
       "RESOLVED": "Resuelta"
     },
@@ -146,9 +147,10 @@
       "AVAILABLE": "Disponible"
     },
     "shipment": {
+      "CANCELLED": "Cancelado",
       "COMPLETED": "Completado",
       "IN_TRANSIT": "En Ruta",
-      "PENDING": "Pendiente"
+      "REGISTERED": "Registrado"
     }
   }
 }
