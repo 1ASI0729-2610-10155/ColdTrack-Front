@@ -110,6 +110,7 @@
     "shipment": "Search shipment..."
   },
   "sensors": {
+    "addReading": "Add reading",
     "assignmentError": "The sensor could not be assigned. Check that it is still available.",
     "assignmentSubtitle": "Choose an active shipment for this available sensor.",
     "assignmentSuccess": "Sensor assigned successfully",
@@ -126,7 +127,12 @@
     "confirmAssignment": "Assign sensor",
     "selectShipment": "Shipment",
     "selectShipmentPlaceholder": "Select a shipment",
+    "saveReading": "Save reading",
     "subtitle": "Manage and link sensors to shipments",
+    "telemetryError": "The reading could not be recorded. Verify that the sensor is assigned.",
+    "telemetryNote": "Saving a reading updates both the sensor and its assigned shipment.",
+    "telemetrySuccess": "Reading recorded successfully",
+    "telemetryTitle": "Record sensor reading",
     "title": "Sensor Management"
   },
   "severity": {
@@ -137,6 +143,8 @@
     "assignedSensor": "Assigned sensor",
     "cargoDescription": "Cargo Description",
     "cargoPlaceholder": "Describe the shipment contents...",
+    "complete": "Complete shipment",
+    "completedSuccess": "Shipment completed successfully.",
     "departureAt": "Departure Date",
     "destinationPlaceholder": "Destination city",
     "detailsTitle": "Shipment details",
@@ -147,6 +155,9 @@
     "note": "Sensors will be assigned in the next step. First register the basic shipment information.",
     "register": "Register Shipment",
     "relatedAlerts": "Related alerts",
+    "lifecycleError": "The shipment status could not be updated.",
+    "start": "Start shipment",
+    "startedSuccess": "Shipment is now in transit. You can complete it when it arrives.",
     "subtitle": "Complete all fields to create a new shipment",
     "title": "Register New Shipment"
   },

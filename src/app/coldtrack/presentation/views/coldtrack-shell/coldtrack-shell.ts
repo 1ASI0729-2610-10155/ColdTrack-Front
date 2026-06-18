@@ -61,6 +61,13 @@ export class ColdtrackShell {
   protected readonly assignmentLoading = signal(false);
   protected readonly assignmentError = signal<string | null>(null);
   protected readonly assignmentSuccess = signal<string | null>(null);
+  protected readonly telemetrySensor = signal<SensorEntity | null>(null);
+  protected readonly telemetryLoading = signal(false);
+  protected readonly telemetryError = signal<string | null>(null);
+  protected readonly telemetrySuccess = signal<string | null>(null);
+  protected readonly lifecycleLoading = signal(false);
+  protected readonly lifecycleError = signal<string | null>(null);
+  protected readonly lifecycleSuccess = signal<string | null>(null);
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     email: ['test@test.com', [Validators.required, Validators.email]],
@@ -89,6 +96,11 @@ export class ColdtrackShell {
 
   protected readonly assignmentForm = this.formBuilder.nonNullable.group({
     shipmentCode: ['', Validators.required]
+  });
+
+  protected readonly telemetryForm = this.formBuilder.nonNullable.group({
+    temperature: [4, [Validators.required, Validators.min(-50), Validators.max(100)]],
+    humidity: [50, [Validators.required, Validators.min(0), Validators.max(100)]]
   });
 
   protected readonly navigationItems = signal([
@@ -221,6 +233,8 @@ export class ColdtrackShell {
   /** Opens the shipment details dialog. */
   protected showShipmentDetails(shipment: ShipmentEntity): void {
     this.detailShipment.set(shipment);
+    this.lifecycleError.set(null);
+    this.lifecycleSuccess.set(null);
   }
 
   /** Opens the sensor assignment dialog. */
@@ -235,6 +249,75 @@ export class ColdtrackShell {
     this.linkingSensor.set(null);
     this.assignmentForm.reset();
     this.assignmentError.set(null);
+  }
+
+  /** Opens the telemetry form for an assigned sensor. */
+  protected openTelemetry(sensor: SensorEntity): void {
+    this.telemetrySensor.set(sensor);
+    this.telemetryForm.reset({
+      temperature: sensor.temperature ?? 4,
+      humidity: sensor.humidity ?? 50
+    });
+    this.telemetryError.set(null);
+  }
+
+  /** Closes the telemetry form. */
+  protected closeTelemetry(): void {
+    this.telemetrySensor.set(null);
+    this.telemetryError.set(null);
+  }
+
+  /** Records an environmental reading for the selected sensor. */
+  protected recordTelemetry(): void {
+    const sensor = this.telemetrySensor();
+    if (!sensor || this.telemetryForm.invalid) {
+      this.telemetryForm.markAllAsTouched();
+      return;
+    }
+
+    const { temperature, humidity } = this.telemetryForm.getRawValue();
+    this.telemetryLoading.set(true);
+    this.telemetryError.set(null);
+    this.store.recordTelemetry(sensor.id, temperature, humidity)
+      .pipe(finalize(() => this.telemetryLoading.set(false)))
+      .subscribe({
+        next: () => {
+          this.telemetrySuccess.set(sensor.id);
+          this.closeTelemetry();
+        },
+        error: () => this.telemetryError.set('sensors.telemetryError')
+      });
+  }
+
+  /** Advances a shipment through its required lifecycle state. */
+  protected advanceShipment(): void {
+    const shipment = this.detailShipment();
+    if (!shipment || (shipment.status !== 'REGISTERED' && shipment.status !== 'IN_TRANSIT')) {
+      return;
+    }
+
+    this.lifecycleLoading.set(true);
+    this.lifecycleError.set(null);
+    const operation = shipment.status === 'REGISTERED'
+      ? this.store.startShipment(shipment.id)
+      : this.store.completeShipment(shipment.id);
+    operation.pipe(finalize(() => this.lifecycleLoading.set(false)))
+      .subscribe({
+        next: updatedShipment => {
+          this.detailShipment.set(updatedShipment);
+          this.lifecycleSuccess.set(updatedShipment.status === 'IN_TRANSIT'
+            ? 'shipment.startedSuccess'
+            : 'shipment.completedSuccess');
+        },
+        error: () => this.lifecycleError.set('shipment.lifecycleError')
+      });
+  }
+
+  /** Returns the shipment currently linked to a sensor. */
+  protected shipmentForSensor(sensor: SensorEntity): ShipmentEntity | null {
+    return sensor.assignedShipmentId
+      ? this.store.shipments().find(shipment => shipment.id === sensor.assignedShipmentId) ?? null
+      : null;
   }
 
   /** Assigns the selected sensor to the selected shipment. */

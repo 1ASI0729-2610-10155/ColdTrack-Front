@@ -110,6 +110,7 @@
     "shipment": "Buscar envio..."
   },
   "sensors": {
+    "addReading": "Agregar lectura",
     "assignmentError": "No se pudo asignar el sensor. Verifica que siga disponible.",
     "assignmentSubtitle": "Elige un envio activo para este sensor disponible.",
     "assignmentSuccess": "Sensor asignado correctamente",
@@ -126,7 +127,12 @@
     "confirmAssignment": "Asignar sensor",
     "selectShipment": "Envio",
     "selectShipmentPlaceholder": "Selecciona un envio",
+    "saveReading": "Guardar lectura",
     "subtitle": "Administra y vincula sensores a los envios",
+    "telemetryError": "No se pudo registrar la lectura. Verifica que el sensor este asignado.",
+    "telemetryNote": "Guardar una lectura actualiza tanto el sensor como el envio asignado.",
+    "telemetrySuccess": "Lectura registrada correctamente",
+    "telemetryTitle": "Registrar lectura del sensor",
     "title": "Gestion de Sensores"
   },
   "severity": {
@@ -137,6 +143,8 @@
     "assignedSensor": "Sensor asignado",
     "cargoDescription": "Descripcion de la Carga",
     "cargoPlaceholder": "Detalla el contenido del envio...",
+    "complete": "Completar envio",
+    "completedSuccess": "Envio completado correctamente.",
     "departureAt": "Fecha de Salida",
     "destinationPlaceholder": "Ciudad de destino",
     "detailsTitle": "Detalles del envio",
@@ -147,6 +155,9 @@
     "note": "Los sensores se asignaran en el siguiente paso. Primero registra la informacion basica del envio.",
     "register": "Registrar Envio",
     "relatedAlerts": "Alertas relacionadas",
+    "lifecycleError": "No se pudo actualizar el estado del envio.",
+    "start": "Iniciar envio",
+    "startedSuccess": "El envio ahora esta en ruta. Puedes completarlo cuando llegue.",
     "subtitle": "Complete todos los campos para crear un nuevo envio",
     "title": "Registrar Nuevo Envio"
   },
