@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "api": "node server/server.js",
+    "seed:mockapi": "node server/seed-mockapi.js",
     "dev": "npm-run-all --parallel api start",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
