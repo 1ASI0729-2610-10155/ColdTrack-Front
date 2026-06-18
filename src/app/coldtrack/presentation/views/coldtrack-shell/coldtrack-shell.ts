@@ -15,6 +15,7 @@ import { ShipmentEntity, ShipmentStatus } from '../../../domain/model/shipment.e
 import { SensorEntity } from '../../../domain/model/sensor.entity';
 import { AlertEntity, AlertSeverity, AlertStatus } from '../../../domain/model/alert.entity';
 import { UserRole } from '../../../../iam/domain/model/user.entity';
+import { finalize } from 'rxjs';
 
 type ShellView = 'dashboard' | 'new-shipment' | 'sensors' | 'alerts' | 'history';
 type AuthMode = 'sign-in' | 'sign-up';
@@ -55,6 +56,11 @@ export class ColdtrackShell {
   protected readonly historySearch = signal('');
   protected readonly selectedSeverity = signal<'ALL' | AlertSeverity>('ALL');
   protected readonly selectedAlertStatus = signal<'ALL' | AlertStatus>('ALL');
+  protected readonly detailShipment = signal<ShipmentEntity | null>(null);
+  protected readonly linkingSensor = signal<SensorEntity | null>(null);
+  protected readonly assignmentLoading = signal(false);
+  protected readonly assignmentError = signal<string | null>(null);
+  protected readonly assignmentSuccess = signal<string | null>(null);
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     email: ['test@test.com', [Validators.required, Validators.email]],
@@ -79,6 +85,10 @@ export class ColdtrackShell {
 
   protected readonly sensorForm = this.formBuilder.nonNullable.group({
     id: ['', [Validators.required, Validators.pattern(/^SENS-[A-Za-z0-9-]+$/)]]
+  });
+
+  protected readonly assignmentForm = this.formBuilder.nonNullable.group({
+    shipmentCode: ['', Validators.required]
   });
 
   protected readonly navigationItems = signal([
@@ -124,6 +134,16 @@ export class ColdtrackShell {
       return '0.0';
     }
     return (values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1);
+  });
+
+  protected readonly detailSensor = computed(() => {
+    const shipment = this.detailShipment();
+    return shipment ? this.store.sensors().find(sensor => sensor.assignedShipmentId === shipment.id) ?? null : null;
+  });
+
+  protected readonly detailAlerts = computed(() => {
+    const shipment = this.detailShipment();
+    return shipment ? this.store.alerts().filter(alert => alert.shipmentId === shipment.id) : [];
   });
 
   constructor() {
@@ -198,6 +218,72 @@ export class ColdtrackShell {
     this.sensorForm.reset();
   }
 
+  /** Opens the shipment details dialog. */
+  protected showShipmentDetails(shipment: ShipmentEntity): void {
+    this.detailShipment.set(shipment);
+  }
+
+  /** Opens the sensor assignment dialog. */
+  protected openSensorAssignment(sensor: SensorEntity): void {
+    this.linkingSensor.set(sensor);
+    this.assignmentForm.reset();
+    this.assignmentError.set(null);
+  }
+
+  /** Closes the sensor assignment dialog. */
+  protected closeSensorAssignment(): void {
+    this.linkingSensor.set(null);
+    this.assignmentForm.reset();
+    this.assignmentError.set(null);
+  }
+
+  /** Assigns the selected sensor to the selected shipment. */
+  protected assignSensor(): void {
+    const sensor = this.linkingSensor();
+    if (!sensor || this.assignmentForm.invalid) {
+      this.assignmentForm.markAllAsTouched();
+      return;
+    }
+
+    this.assignmentLoading.set(true);
+    this.assignmentError.set(null);
+    const shipmentCode = this.assignmentForm.controls.shipmentCode.value;
+    this.store.assignSensor(shipmentCode, sensor.id)
+      .pipe(finalize(() => this.assignmentLoading.set(false)))
+      .subscribe({
+        next: () => {
+          this.assignmentSuccess.set(`${sensor.id} → ${shipmentCode}`);
+          this.closeSensorAssignment();
+        },
+        error: () => this.assignmentError.set('sensors.assignmentError')
+      });
+  }
+
+  /** Exports all currently loaded shipments as an Excel-compatible CSV file. */
+  protected exportShipments(): void {
+    this.downloadCsv('coldtrack-shipments',
+      ['ID', 'Destination', 'Status', 'Driver', 'Cargo', 'Temperature', 'Humidity', 'Departure', 'Estimated arrival'],
+      this.store.shipments().map(shipment => [shipment.id, shipment.destination, shipment.status, shipment.driver,
+        shipment.cargoDescription, shipment.temperature, shipment.humidity, shipment.departureAt, shipment.estimatedArrivalAt]));
+  }
+
+  /** Exports the currently filtered alerts as CSV. */
+  protected exportAlerts(): void {
+    this.downloadCsv('coldtrack-alerts',
+      ['ID', 'Severity', 'Status', 'Type', 'Shipment', 'Sensor', 'Message', 'Created at', 'Value', 'Threshold'],
+      this.filteredAlerts().map(alert => [alert.id, alert.severity, alert.status, alert.type, alert.shipmentId,
+        alert.sensorId, alert.message, alert.createdAt, alert.value, alert.threshold]));
+  }
+
+  /** Exports the currently filtered completed shipment history as CSV. */
+  protected exportHistory(): void {
+    this.downloadCsv('coldtrack-history',
+      ['ID', 'Destination', 'Driver', 'Cargo', 'Departure', 'Arrival', 'Temperature', 'Humidity'],
+      this.filteredHistory().map(shipment => [shipment.id, shipment.destination, shipment.driver,
+        shipment.cargoDescription, shipment.departureAt, shipment.estimatedArrivalAt,
+        shipment.temperature, shipment.humidity]));
+  }
+
   /**
    * Returns the translation key for a shipment status.
    * @param status - Shipment status.
@@ -232,5 +318,26 @@ export class ColdtrackShell {
 
   private matchesSensor(sensor: SensorEntity, query: string): boolean {
     return `${sensor.id} ${sensor.assignedShipmentId ?? ''}`.toLowerCase().includes(query);
+  }
+
+  private downloadCsv(filename: string, headers: string[], rows: unknown[][]): void {
+    const content = [headers, ...rows]
+      .map(row => row.map(value => this.toCsvCell(value)).join(','))
+      .join('\r\n');
+    const blob = new Blob([`\uFEFF${content}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `${filename}-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private toCsvCell(value: unknown): string {
+    let text = value === null || value === undefined ? '' : String(value);
+    if (/^[=+\-@]/.test(text)) {
+      text = `'${text}`;
+    }
+    return `"${text.replace(/"/g, '""')}"`;
   }
 }

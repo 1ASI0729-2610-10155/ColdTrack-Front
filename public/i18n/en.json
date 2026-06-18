@@ -1,6 +1,7 @@
 {
   "actions": {
     "cancel": "Cancel",
+    "close": "Close",
     "details": "View details",
     "export": "Export",
     "exportReport": "Export report",
@@ -109,14 +110,22 @@
     "shipment": "Search shipment..."
   },
   "sensors": {
+    "assignmentError": "The sensor could not be assigned. Check that it is still available.",
+    "assignmentSubtitle": "Choose an active shipment for this available sensor.",
+    "assignmentSuccess": "Sensor assigned successfully",
+    "assignmentTitle": "Assign sensor to shipment",
     "assigned": "Assigned sensors",
     "available": "Available",
     "free": "Free",
     "inUse": "In use",
     "link": "Link",
     "list": "Sensor List",
+    "noAssignableShipments": "There are no registered or in-transit shipments available. Create a shipment first.",
     "registered": "Registered sensors",
     "register": "Register Sensor",
+    "confirmAssignment": "Assign sensor",
+    "selectShipment": "Shipment",
+    "selectShipmentPlaceholder": "Select a shipment",
     "subtitle": "Manage and link sensors to shipments",
     "title": "Sensor Management"
   },
@@ -125,14 +134,19 @@
     "WARNING": "Warning"
   },
   "shipment": {
+    "assignedSensor": "Assigned sensor",
     "cargoDescription": "Cargo Description",
     "cargoPlaceholder": "Describe the shipment contents...",
     "departureAt": "Departure Date",
     "destinationPlaceholder": "Destination city",
+    "detailsTitle": "Shipment details",
     "driverPlaceholder": "Select a driver",
     "estimatedArrivalAt": "Estimated Arrival",
+    "noAlerts": "No alerts are associated with this shipment.",
+    "noSensor": "No sensor is currently assigned.",
     "note": "Sensors will be assigned in the next step. First register the basic shipment information.",
     "register": "Register Shipment",
+    "relatedAlerts": "Related alerts",
     "subtitle": "Complete all fields to create a new shipment",
     "title": "Register New Shipment"
   },
