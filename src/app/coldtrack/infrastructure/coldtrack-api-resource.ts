@@ -83,6 +83,14 @@ export class ColdtrackApiResource {
       .pipe(map(response => ({ ...response })));
   }
 
+  /** Assigns an available sensor to an existing shipment. */
+  assignSensor(shipmentCode: string, sensorCode: string): Observable<SensorEntity> {
+    return this.http.post<SensorResponse>(
+      `${this.baseUrl}/shipments/${encodeURIComponent(shipmentCode)}/sensor-assignments`,
+      { sensorCode }
+    ).pipe(map(response => ({ ...response })));
+  }
+
   /**
    * Lists all alerts.
    * @returns Alert entities.

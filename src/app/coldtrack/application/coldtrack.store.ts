@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { forkJoin, finalize } from 'rxjs';
+import { forkJoin, finalize, Observable, tap } from 'rxjs';
 import { AlertEntity } from '../domain/model/alert.entity';
 import { SensorEntity } from '../domain/model/sensor.entity';
 import { ShipmentEntity } from '../domain/model/shipment.entity';
@@ -32,6 +32,9 @@ export class ColdtrackStore {
   readonly completedShipments = computed(() => this.shipmentsSignal().filter(shipment => shipment.status === 'COMPLETED'));
   /** Available sensors. */
   readonly availableSensors = computed(() => this.sensorsSignal().filter(sensor => sensor.status === 'AVAILABLE'));
+  /** Shipments that can still receive operational sensor assignments. */
+  readonly assignableShipments = computed(() => this.shipmentsSignal()
+    .filter(shipment => shipment.status === 'REGISTERED' || shipment.status === 'IN_TRANSIT'));
   /** Active alerts. */
   readonly activeAlerts = computed(() => this.alertsSignal().filter(alert => alert.status === 'ACTIVE'));
   /** Critical alerts. */
@@ -70,5 +73,13 @@ export class ColdtrackStore {
     this.api.createSensor(request).subscribe(sensor => {
       this.sensorsSignal.update(sensors => [sensor, ...sensors]);
     });
+  }
+
+  /** Assigns a sensor and replaces its local state with the backend response. */
+  assignSensor(shipmentCode: string, sensorCode: string): Observable<SensorEntity> {
+    return this.api.assignSensor(shipmentCode, sensorCode).pipe(
+      tap(updatedSensor => this.sensorsSignal.update(sensors =>
+        sensors.map(sensor => sensor.id === updatedSensor.id ? updatedSensor : sensor)))
+    );
   }
 }
