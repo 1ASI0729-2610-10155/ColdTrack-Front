@@ -11,7 +11,7 @@ export interface CreateUserRequest {
   email: string;
   /** User role. */
   role: UserRole;
-  /** Demo password persisted by the fake API. */
+  /** Account password. */
   password: string;
 }
 

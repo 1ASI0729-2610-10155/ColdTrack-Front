@@ -24,4 +24,4 @@ export interface ShipmentEntity {
 }
 
 /** Shipment states used by dashboards and reports. */
-export type ShipmentStatus = 'IN_TRANSIT' | 'COMPLETED' | 'PENDING';
+export type ShipmentStatus = 'REGISTERED' | 'IN_TRANSIT' | 'COMPLETED' | 'CANCELLED';

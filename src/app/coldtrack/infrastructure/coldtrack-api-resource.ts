@@ -1,9 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { UserEntity } from '../../iam/domain/model/user.entity';
-import { AlertResponse, SensorResponse, ShipmentResponse, UserResponse } from './responses';
+import { AlertResponse, AuthenticatedUserResponse, SensorResponse, ShipmentResponse, UserResponse } from './responses';
 import { ColdtrackAssembler } from './coldtrack-assembler';
 import { AlertEntity } from '../domain/model/alert.entity';
 import { SensorEntity } from '../domain/model/sensor.entity';
@@ -11,7 +11,7 @@ import { ShipmentEntity } from '../domain/model/shipment.entity';
 import { CreateSensorRequest, CreateShipmentRequest, CreateUserRequest } from './requests';
 
 /**
- * @summary HttpClient-backed resource facade for ColdTrack fake API endpoints.
+ * @summary HttpClient-backed resource facade for the ColdTrack backend.
  * @author HackRats
  */
 @Injectable({ providedIn: 'root' })
@@ -25,19 +25,23 @@ export class ColdtrackApiResource {
    * @param password - Login password.
    * @returns Users matching both credentials.
    */
-  findUsersByCredentials(email: string, password: string): Observable<UserEntity[]> {
-    const params = new HttpParams().set('email', email).set('password', password);
-    return this.http.get<UserResponse[]>(`${this.baseUrl}/users`, { params })
-      .pipe(map(users => users.map(ColdtrackAssembler.toUserEntity)));
+  signIn(email: string, password: string): Observable<{ user: UserEntity; token: string; tokenType: string }> {
+    return this.http.post<AuthenticatedUserResponse>(`${this.baseUrl}/authentication/sign-in`, { email, password })
+      .pipe(map(response => ({
+        user: ColdtrackAssembler.toUserEntity(response.user),
+        token: response.token,
+        tokenType: response.tokenType
+      })));
   }
 
   /**
-   * Persists a new user in the fake API.
+   * Creates a user in the backend API.
    * @param request - User creation payload.
    * @returns Created user entity.
    */
-  createUser(request: CreateUserRequest): Observable<UserEntity> {
-    return this.http.post<UserResponse>(`${this.baseUrl}/users`, request)
+  signUp(request: CreateUserRequest): Observable<UserEntity> {
+    const payload = { ...request, role: `ROLE_${request.role}` };
+    return this.http.post<UserResponse>(`${this.baseUrl}/authentication/sign-up`, payload)
       .pipe(map(ColdtrackAssembler.toUserEntity));
   }
 
@@ -56,15 +60,8 @@ export class ColdtrackApiResource {
    * @returns Created shipment.
    */
   createShipment(request: CreateShipmentRequest): Observable<ShipmentEntity> {
-    const id = `ENV-${Date.now().toString().slice(-3)}`;
-    const payload: ShipmentEntity = {
-      id,
-      ...request,
-      status: 'PENDING',
-      temperature: null,
-      humidity: null
-    };
-    return this.http.post<ShipmentResponse>(`${this.baseUrl}/shipments`, payload);
+    return this.http.post<ShipmentResponse>(`${this.baseUrl}/shipments`, request)
+      .pipe(map(response => ({ ...response })));
   }
 
   /**
@@ -82,15 +79,8 @@ export class ColdtrackApiResource {
    * @returns Created sensor.
    */
   createSensor(request: CreateSensorRequest): Observable<SensorEntity> {
-    const payload: SensorEntity = {
-      id: request.id,
-      status: 'AVAILABLE',
-      assignedShipmentId: null,
-      lastReadingAt: null,
-      temperature: null,
-      humidity: null
-    };
-    return this.http.post<SensorResponse>(`${this.baseUrl}/sensors`, payload);
+    return this.http.post<SensorResponse>(`${this.baseUrl}/sensors`, request)
+      .pipe(map(response => ({ ...response })));
   }
 
   /**

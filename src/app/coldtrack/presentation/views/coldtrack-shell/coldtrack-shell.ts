@@ -65,7 +65,7 @@ export class ColdtrackShell {
     fullName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     role: ['LOGISTICS_ADMIN' as UserRole, Validators.required],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', Validators.required]
   });
 
@@ -78,7 +78,7 @@ export class ColdtrackShell {
   });
 
   protected readonly sensorForm = this.formBuilder.nonNullable.group({
-    id: ['', Validators.required]
+    id: ['', [Validators.required, Validators.pattern(/^SENS-[A-Za-z0-9-]+$/)]]
   });
 
   protected readonly navigationItems = signal([
@@ -152,7 +152,7 @@ export class ColdtrackShell {
     this.authStore.signIn(this.loginForm.controls.email.value, this.loginForm.controls.password.value);
   }
 
-  /** Submits the sign-up form and creates a new fake API user. */
+  /** Submits the sign-up form and creates a new backend user. */
   protected signUp(): void {
     if (this.registerForm.invalid || this.registerForm.controls.password.value !== this.registerForm.controls.confirmPassword.value) {
       this.registerForm.markAllAsTouched();

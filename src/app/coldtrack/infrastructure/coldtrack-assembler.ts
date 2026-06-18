@@ -5,7 +5,7 @@ import { UserEntity } from '../../iam/domain/model/user.entity';
 import { AlertResponse, SensorResponse, ShipmentResponse, UserResponse } from './responses';
 
 /**
- * @summary Maps fake API DTOs into ColdTrack domain entities.
+ * @summary Maps backend DTOs into ColdTrack domain entities.
  * @author HackRats
  */
 export class ColdtrackAssembler {
@@ -15,7 +15,12 @@ export class ColdtrackAssembler {
    * @returns User entity.
    */
   static toUserEntity(response: UserResponse): UserEntity {
-    return { ...response };
+    return {
+      id: response.id,
+      fullName: response.fullName,
+      email: response.email,
+      roles: response.roles.map(role => role.replace(/^ROLE_/, '') as UserEntity['roles'][number])
+    };
   }
 
   /**

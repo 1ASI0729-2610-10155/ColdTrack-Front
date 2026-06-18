@@ -13,21 +13,23 @@ export interface AlertEntity {
   type: AlertType;
   /** Shipment related to the alert. */
   shipmentId: string;
+  /** Sensor related to the alert. */
+  sensorId: string;
   /** User-facing alert message. */
   message: string;
   /** Timestamp when the alert was registered. */
   createdAt: string;
   /** Current measured value. */
-  value: string | null;
+  value: number | null;
   /** Business threshold that triggered the alert. */
-  threshold: string | null;
+  threshold: number | null;
 }
 
 /** Alert severity values used for filtering. */
 export type AlertSeverity = 'CRITICAL' | 'WARNING';
 
 /** Alert resolution values. */
-export type AlertStatus = 'ACTIVE' | 'RESOLVED';
+export type AlertStatus = 'ACTIVE' | 'ACKNOWLEDGED' | 'RESOLVED';
 
 /** Alert type values. */
 export type AlertType = 'TEMPERATURE' | 'HUMIDITY' | 'CONNECTION';
