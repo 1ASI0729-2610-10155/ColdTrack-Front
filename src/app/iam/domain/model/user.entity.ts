@@ -9,10 +9,8 @@ export interface UserEntity {
   fullName: string;
   /** User e-mail used as login credential. */
   email: string;
-  /** Plain password for the local fake API demo. */
-  password: string;
-  /** Access role assigned to the account. */
-  role: UserRole;
+  /** Access roles assigned to the account. */
+  roles: UserRole[];
 }
 
 /** Available roles for ColdTrack accounts. */

@@ -4,8 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "api": "node server/server.js",
-    "dev": "npm-run-all --parallel api start",
+    "dev": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },
@@ -31,8 +30,6 @@
     "@angular/cli": "^21.2.8",
     "@angular/compiler-cli": "^21.2.10",
     "baseline-browser-mapping": "^2.10.23",
-    "json-server": "^0.17.4",
-    "npm-run-all": "^4.1.5",
     "typescript": "~5.9.2"
   }
 }

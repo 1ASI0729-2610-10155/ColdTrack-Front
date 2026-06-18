@@ -21,13 +21,7 @@ Install dependencies:
 npm install
 ```
 
-Start the fake API:
-
-```bash
-npm run api
-```
-
-Start the Angular application in another terminal:
+Start the Angular application:
 
 ```bash
 npm start
@@ -40,18 +34,18 @@ Open the app at `http://localhost:4200`.
 - Email: `test@test.com`
 - Password: `password`
 
-New accounts and new shipments are posted to the fake API served from `server/db.js` during the running session.
+The application connects to the deployed ColdTrack API at `https://freshguard-coldtrack-api.onrender.com/api/v1`. Demo data is provided by its MySQL database.
 
 ## Project Structure
 
 - `src/app/iam/domain/model`: authentication user model.
 - `src/app/iam/application`: authentication state services.
+- `src/app/iam/infrastructure`: JWT session persistence and HTTP authentication interceptor.
 - `src/app/coldtrack/domain/model`: shipment, sensor, and alert entities.
 - `src/app/coldtrack/application`: signal-based operational store.
 - `src/app/coldtrack/infrastructure`: request/response DTOs, API resource, and assemblers.
 - `src/app/coldtrack/presentation`: feature routes and Angular Material views.
 - `public/i18n`: English and Spanish translation files.
-- `server/db.js`: fake API seed data.
 
 ## Project Setup Notes
 
@@ -60,14 +54,6 @@ Documentation updated by Mathias Augusto Arechaga Saavedra to clarify the projec
 ## Internationalization
 
 ColdTrack includes English and Spanish translations through the public i18n files, allowing the interface to switch languages at runtime.
-
-## Fake API
-
-The project uses a local json-server API to provide demo users, shipments, sensors, and alerts during development.
-
-## Frontend Structure
-
-The frontend is organized by context and layer, separating domain models, application state, infrastructure services, and presentation views.
 
 ## Git Flow
 
