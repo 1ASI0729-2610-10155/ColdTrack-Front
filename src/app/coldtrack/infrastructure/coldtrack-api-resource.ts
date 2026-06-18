@@ -91,6 +91,30 @@ export class ColdtrackApiResource {
     ).pipe(map(response => ({ ...response })));
   }
 
+  /** Records a telemetry reading for an assigned sensor. */
+  recordTelemetry(sensorCode: string, temperature: number, humidity: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/telemetry-readings`, {
+      sensorCode,
+      temperature,
+      humidity,
+      recordedAt: new Date().toISOString()
+    });
+  }
+
+  /** Moves a registered shipment into transit. */
+  startShipment(shipmentCode: string): Observable<ShipmentEntity> {
+    return this.http.post<ShipmentResponse>(
+      `${this.baseUrl}/shipments/${encodeURIComponent(shipmentCode)}/departures`, {})
+      .pipe(map(response => ({ ...response })));
+  }
+
+  /** Completes an in-transit shipment. */
+  completeShipment(shipmentCode: string): Observable<ShipmentEntity> {
+    return this.http.post<ShipmentResponse>(
+      `${this.baseUrl}/shipments/${encodeURIComponent(shipmentCode)}/completions`, {})
+      .pipe(map(response => ({ ...response })));
+  }
+
   /**
    * Lists all alerts.
    * @returns Alert entities.

@@ -185,12 +185,15 @@
           @if (assignmentSuccess()) {
             <p class="action-feedback success" role="status">{{ 'sensors.assignmentSuccess' | translate }}: {{ assignmentSuccess() }}</p>
           }
+          @if (telemetrySuccess()) {
+            <p class="action-feedback success" role="status">{{ 'sensors.telemetrySuccess' | translate }}: {{ telemetrySuccess() }}</p>
+          }
           <form class="inline-create" [formGroup]="sensorForm" (ngSubmit)="createSensor()" aria-label="Create sensor form">
             <input formControlName="id" type="text" placeholder="SENS-A999" aria-label="Sensor id">
             <button mat-flat-button color="primary" type="submit"><mat-icon aria-hidden="true">add</mat-icon>{{ 'sensors.register' | translate }}</button>
           </form>
           <div class="metric-grid"><article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">device_thermostat</mat-icon></span><small>{{ 'metrics.total' | translate }}</small><strong>{{ store.sensors().length }}</strong><span>{{ 'sensors.registered' | translate }}</span></article><article class="metric-card"><span class="icon-box blue"><mat-icon aria-hidden="true">link</mat-icon></span><small>{{ 'metrics.active' | translate }}</small><strong>{{ store.sensors().length - store.availableSensors().length }}</strong><span>{{ 'sensors.assigned' | translate }}</span></article><article class="metric-card"><span class="icon-box green"><mat-icon aria-hidden="true">check_circle</mat-icon></span><small>{{ 'sensors.free' | translate }}</small><strong>{{ store.availableSensors().length }}</strong><span>{{ 'sensors.available' | translate }}</span></article></div>
-          <section class="data-panel"><div class="section-title"><h2>{{ 'sensors.list' | translate }}</h2><input class="search-input" type="search" [placeholder]="'search.sensor' | translate" (input)="sensorSearch.set($any($event.target).value)" aria-label="Search sensor"></div><div class="table-scroll"><table><thead><tr><th>{{ 'labels.sensorId' | translate }}</th><th>{{ 'labels.status' | translate }}</th><th>{{ 'labels.assignedShipment' | translate }}</th><th>{{ 'labels.lastReading' | translate }}</th><th>{{ 'labels.temperature' | translate }}</th><th>{{ 'labels.humidity' | translate }}</th><th>{{ 'labels.actions' | translate }}</th></tr></thead><tbody>@for (sensor of filteredSensors(); track trackById($index, sensor)) {<tr><td>{{ sensor.id }}</td><td><span class="pill" [class.success]="sensor.status === 'AVAILABLE'">{{ ('status.sensor.' + sensor.status) | translate }}</span></td><td>{{ sensor.assignedShipmentId ?? '-' }}</td><td>{{ sensor.lastReadingAt ?? '-' }}</td><td>{{ sensor.temperature ?? '-' }}</td><td>{{ sensor.humidity ?? '-' }}</td><td><button class="link-button" type="button" [disabled]="sensor.status === 'ASSIGNED'" (click)="openSensorAssignment(sensor)">{{ sensor.status === 'ASSIGNED' ? ('sensors.inUse' | translate) : ('sensors.link' | translate) }}</button></td></tr>}</tbody></table></div></section>
+          <section class="data-panel"><div class="section-title"><h2>{{ 'sensors.list' | translate }}</h2><input class="search-input" type="search" [placeholder]="'search.sensor' | translate" (input)="sensorSearch.set($any($event.target).value)" aria-label="Search sensor"></div><div class="table-scroll"><table><thead><tr><th>{{ 'labels.sensorId' | translate }}</th><th>{{ 'labels.status' | translate }}</th><th>{{ 'labels.assignedShipment' | translate }}</th><th>{{ 'labels.lastReading' | translate }}</th><th>{{ 'labels.temperature' | translate }}</th><th>{{ 'labels.humidity' | translate }}</th><th>{{ 'labels.actions' | translate }}</th></tr></thead><tbody>@for (sensor of filteredSensors(); track trackById($index, sensor)) {<tr><td>{{ sensor.id }}</td><td><span class="pill" [class.success]="sensor.status === 'AVAILABLE'">{{ ('status.sensor.' + sensor.status) | translate }}</span></td><td>@if (shipmentForSensor(sensor); as shipment) {<div class="assigned-shipment"><strong>{{ shipment.id }}</strong><small>{{ shipment.destination }} · {{ shipmentStatusKey(shipment.status) | translate }}</small></div>} @else {-}</td><td>{{ sensor.lastReadingAt ?? '-' }}</td><td>{{ sensor.temperature ?? '-' }}@if (sensor.temperature !== null) {°C}</td><td>{{ sensor.humidity ?? '-' }}@if (sensor.humidity !== null) {%}</td><td>@if (sensor.status === 'AVAILABLE') {<button class="link-button" type="button" (click)="openSensorAssignment(sensor)">{{ 'sensors.link' | translate }}</button>} @else {<button class="link-button" type="button" (click)="openTelemetry(sensor)">{{ 'sensors.addReading' | translate }}</button>}</td></tr>}</tbody></table></div></section>
         </section>
       }
 
@@ -238,7 +241,13 @@
               @for (alert of detailAlerts(); track alert.id) {<p><strong>{{ alert.id }}</strong> · {{ alert.message }}</p>}
             } @else {<p>{{ 'shipment.noAlerts' | translate }}</p>}
           </div>
-          <div class="modal-actions"><button mat-flat-button color="primary" type="button" (click)="detailShipment.set(null)">{{ 'actions.close' | translate }}</button></div>
+          @if (lifecycleSuccess()) {<p class="action-feedback success" role="status">{{ lifecycleSuccess()! | translate }}</p>}
+          @if (lifecycleError()) {<p class="form-error" role="alert">{{ lifecycleError()! | translate }}</p>}
+          <div class="modal-actions">
+            <button mat-stroked-button type="button" (click)="detailShipment.set(null)">{{ 'actions.close' | translate }}</button>
+            @if (shipment.status === 'REGISTERED') {<button mat-flat-button color="primary" type="button" [disabled]="lifecycleLoading()" (click)="advanceShipment()">{{ 'shipment.start' | translate }}</button>}
+            @if (shipment.status === 'IN_TRANSIT') {<button mat-flat-button color="primary" type="button" [disabled]="lifecycleLoading()" (click)="advanceShipment()">{{ 'shipment.complete' | translate }}</button>}
+          </div>
         </section>
       </div>
     }
@@ -257,6 +266,24 @@
             @if (store.assignableShipments().length === 0) {<p class="empty-state">{{ 'sensors.noAssignableShipments' | translate }}</p>}
             @if (assignmentError()) {<p class="form-error" role="alert">{{ assignmentError()! | translate }}</p>}
             <div class="modal-actions"><button mat-stroked-button type="button" (click)="closeSensorAssignment()">{{ 'actions.cancel' | translate }}</button><button mat-flat-button color="primary" type="submit" [disabled]="assignmentForm.invalid || assignmentLoading() || store.assignableShipments().length === 0">{{ 'sensors.confirmAssignment' | translate }}</button></div>
+          </form>
+        </section>
+      </div>
+    }
+
+    @if (telemetrySensor(); as sensor) {
+      <div class="modal-backdrop" (click)="closeTelemetry()">
+        <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="telemetry-title" (click)="$event.stopPropagation()">
+          <div class="modal-heading"><div><span class="eyebrow">{{ sensor.id }}</span><h2 id="telemetry-title">{{ 'sensors.telemetryTitle' | translate }}</h2></div><button class="icon-button" type="button" (click)="closeTelemetry()" [attr.aria-label]="'actions.close' | translate"><mat-icon aria-hidden="true">close</mat-icon></button></div>
+          @if (shipmentForSensor(sensor); as shipment) {<p>{{ shipment.id }} · {{ shipment.destination }}</p>}
+          <form class="assignment-form" [formGroup]="telemetryForm" (ngSubmit)="recordTelemetry()">
+            <label for="telemetryTemperature">{{ 'labels.temperature' | translate }} (°C)</label>
+            <input id="telemetryTemperature" type="number" step="0.1" min="-50" max="100" formControlName="temperature">
+            <label for="telemetryHumidity">{{ 'labels.humidity' | translate }} (%)</label>
+            <input id="telemetryHumidity" type="number" step="0.1" min="0" max="100" formControlName="humidity">
+            <p class="info-note">{{ 'sensors.telemetryNote' | translate }}</p>
+            @if (telemetryError()) {<p class="form-error" role="alert">{{ telemetryError()! | translate }}</p>}
+            <div class="modal-actions"><button mat-stroked-button type="button" (click)="closeTelemetry()">{{ 'actions.cancel' | translate }}</button><button mat-flat-button color="primary" type="submit" [disabled]="telemetryForm.invalid || telemetryLoading()">{{ 'sensors.saveReading' | translate }}</button></div>
           </form>
         </section>
       </div>
