@@ -598,6 +598,22 @@ th {
   padding: 0 12px;
 }
 
+.assignment-form input {
+  min-height: 46px;
+  padding: 0 12px;
+}
+
+.assigned-shipment {
+  display: grid;
+  gap: 3px;
+  min-width: 190px;
+}
+
+.assigned-shipment small {
+  color: #48617f;
+  line-height: 1.35;
+}
+
 .empty-state {
   margin: 0;
   padding: 12px;

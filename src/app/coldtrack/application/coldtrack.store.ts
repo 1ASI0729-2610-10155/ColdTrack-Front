@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { forkJoin, finalize, Observable, tap } from 'rxjs';
+import { forkJoin, finalize, map, Observable, switchMap, tap } from 'rxjs';
 import { AlertEntity } from '../domain/model/alert.entity';
 import { SensorEntity } from '../domain/model/sensor.entity';
 import { ShipmentEntity } from '../domain/model/shipment.entity';
@@ -81,5 +81,37 @@ export class ColdtrackStore {
       tap(updatedSensor => this.sensorsSignal.update(sensors =>
         sensors.map(sensor => sensor.id === updatedSensor.id ? updatedSensor : sensor)))
     );
+  }
+
+  /** Records telemetry and reloads all aggregates affected by alert evaluation. */
+  recordTelemetry(sensorCode: string, temperature: number, humidity: number): Observable<void> {
+    return this.api.recordTelemetry(sensorCode, temperature, humidity).pipe(
+      switchMap(() => forkJoin({
+        shipments: this.api.getShipments(),
+        sensors: this.api.getSensors(),
+        alerts: this.api.getAlerts()
+      })),
+      tap(({ shipments, sensors, alerts }) => {
+        this.shipmentsSignal.set(shipments);
+        this.sensorsSignal.set(sensors);
+        this.alertsSignal.set(alerts);
+      }),
+      map(() => undefined)
+    );
+  }
+
+  /** Starts a registered shipment and updates local state. */
+  startShipment(shipmentCode: string): Observable<ShipmentEntity> {
+    return this.api.startShipment(shipmentCode).pipe(tap(shipment => this.replaceShipment(shipment)));
+  }
+
+  /** Completes an in-transit shipment and updates local state. */
+  completeShipment(shipmentCode: string): Observable<ShipmentEntity> {
+    return this.api.completeShipment(shipmentCode).pipe(tap(shipment => this.replaceShipment(shipment)));
+  }
+
+  private replaceShipment(updatedShipment: ShipmentEntity): void {
+    this.shipmentsSignal.update(shipments => shipments
+      .map(shipment => shipment.id === updatedShipment.id ? updatedShipment : shipment));
   }
 }
