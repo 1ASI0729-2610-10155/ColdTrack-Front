@@ -37,7 +37,10 @@
           {{ 'auth.noAccount' | translate }}
           <button type="button" class="link-button" (click)="authMode.set('sign-up')">{{ 'auth.register' | translate }}</button>
         </p>
-        <p class="demo-box"><strong>Demo:</strong> test@test.com / password</p>
+        <div class="demo-box" role="note">
+          <span><strong>{{ 'auth.demoAccount' | translate }}:</strong> test@test.com / password</span>
+          <button type="button" class="link-button" (click)="useDemoAccount()">{{ 'auth.useDemoAccount' | translate }}</button>
+        </div>
       </form>
     } @else {
       <form class="auth-card" [formGroup]="registerForm" (ngSubmit)="signUp()" aria-label="Create account form">
@@ -107,6 +110,25 @@
     </mat-toolbar>
 
     <main class="content" aria-live="polite">
+      @if (store.loading()) {
+        <section class="status-panel" role="status">
+          <mat-icon aria-hidden="true">sync</mat-icon>
+          <div>
+            <strong>{{ 'app.loading' | translate }}</strong>
+            <p>{{ 'app.serviceWakeup' | translate }}</p>
+          </div>
+        </section>
+      }
+      @if (store.loadError()) {
+        <section class="status-panel error" role="alert">
+          <mat-icon aria-hidden="true">cloud_off</mat-icon>
+          <div>
+            <strong>{{ store.loadError()! | translate }}</strong>
+            <p>{{ 'app.serviceWakeup' | translate }}</p>
+          </div>
+          <button mat-stroked-button type="button" (click)="retryLoad()">{{ 'app.retry' | translate }}</button>
+        </section>
+      }
       @if (currentView() === 'dashboard') {
         <section aria-labelledby="dashboard-title">
           <div class="page-heading">

@@ -139,6 +139,14 @@
   padding: 14px 16px;
 }
 
+.demo-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
 .form-error {
   color: #c62828;
   font-weight: 700;
@@ -209,6 +217,33 @@
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0 76px;
+}
+
+.status-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.status-panel.error {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #991b1b;
+}
+
+.status-panel p {
+  margin: 4px 0 0;
+}
+
+.status-panel button {
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .page-heading {

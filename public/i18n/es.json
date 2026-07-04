@@ -7,44 +7,52 @@
     "exportReport": "Exportar reporte",
     "viewAll": "Ver todas"
   },
+  "app": {
+    "loading": "Cargando datos de ColdTrack",
+    "loadError": "No se pudieron cargar los datos operativos más recientes.",
+    "retry": "Reintentar",
+    "serviceWakeup": "Si el backend está despertando en Render, esto puede tardar unos segundos."
+  },
   "accessibility": {
     "languageSelector": "Selector de idioma",
     "selectLanguage": "Seleccionar idioma"
   },
   "alerts": {
-    "critical": "Criticas",
+    "critical": "Críticas",
     "highPriority": "Alta prioridad",
     "registered": "Alertas registradas",
-    "requireAttention": "Requieren atencion",
+    "requireAttention": "Requieren atención",
     "subtitle": "Monitorea y gestiona alertas del sistema",
     "title": "Sistema de Alertas"
   },
   "auth": {
-    "apiUnavailable": "El servicio de ColdTrack no esta disponible temporalmente.",
-    "confirmPassword": "Confirmar Contrasena",
-    "createAccount": "Crear Cuenta",
-    "createSubtitle": "Unete al sistema ColdTrack",
-    "createTitle": "Crear Cuenta",
-    "email": "Correo Electronico",
+    "apiUnavailable": "El servicio de ColdTrack no está disponible temporalmente.",
+    "confirmPassword": "Confirmar contraseña",
+    "createAccount": "Crear cuenta",
+    "createSubtitle": "Únete al sistema ColdTrack",
+    "createTitle": "Crear cuenta",
+    "email": "Correo electrónico",
     "emailPlaceholder": "tu@email.com",
-    "forgot": "Olvidaste tu contrasena?",
-    "fullName": "Nombre Completo",
+    "demoAccount": "Cuenta demo",
+    "forgot": "¿Olvidaste tu contraseña?",
+    "fullName": "Nombre completo",
     "fullNamePlaceholder": "Juan Perez",
-    "hasAccount": "Ya tienes cuenta?",
-    "invalidCredentials": "Credenciales invalidas. Usa la cuenta demo o crea una nueva.",
-    "noAccount": "No tienes cuenta?",
-    "password": "Contrasena",
-    "register": "Registrate",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "invalidCredentials": "Credenciales inválidas. Usa la cuenta demo o crea una nueva.",
+    "noAccount": "¿No tienes cuenta?",
+    "password": "Contraseña",
+    "register": "Regístrate",
     "role": "Rol",
-    "signIn": "Iniciar Sesion",
-    "subtitle": "Sistema de Gestion de Envios",
+    "signIn": "Iniciar sesión",
+    "subtitle": "Sistema de gestión de envíos",
+    "useDemoAccount": "Usar cuenta demo",
     "welcome": "Bienvenido a ColdTrack"
   },
   "dashboard": {
     "activeAlerts": "Alertas Activas",
-    "activeShipments": "Envios Activos",
-    "subtitle": "Gestiona y monitorea todos tus envios",
-    "title": "Dashboard de Envios"
+    "activeShipments": "Envíos activos",
+    "subtitle": "Gestiona y monitorea todos tus envíos",
+    "title": "Dashboard de envíos"
   },
   "filters": {
     "allSeverities": "Todas las severidades",
@@ -55,29 +63,29 @@
     "developedBy": "Desarrollado por el equipo HackRats"
   },
   "history": {
-    "arrivalDate": "Fecha Llegada",
+    "arrivalDate": "Fecha de llegada",
     "average": "Promedio",
     "averageTemp": "Temperatura media",
     "avgTemp": "Temp. Media",
-    "completedShipments": "Envios completados",
+    "completedShipments": "Envíos completados",
     "generatedAlerts": "Alertas generadas",
-    "subtitle": "Revisa todos los envios completados",
-    "title": "Historial de Envios"
+    "subtitle": "Revisa todos los envíos completados",
+    "title": "Historial de envíos"
   },
   "labels": {
     "actions": "Acciones",
-    "assignedDriver": "Conductor Asignado",
-    "assignedShipment": "Envio Asignado",
+    "assignedDriver": "Conductor asignado",
+    "assignedShipment": "Envío asignado",
     "cargo": "Carga",
     "date": "Fecha",
     "destination": "Destino",
     "driver": "Conductor",
     "estimatedArrival": "Llegada Est.",
     "humidity": "Humedad",
-    "lastReading": "Ultima Lectura",
+    "lastReading": "Última lectura",
     "note": "Nota",
     "sensorId": "ID Sensor",
-    "shipment": "Envio",
+    "shipment": "Envío",
     "status": "Estado",
     "temperature": "Temperatura",
     "value": "Valor"
@@ -87,79 +95,79 @@
     "completed": "Completados",
     "delivered": "Entregados",
     "inRoute": "En ruta",
-    "shipmentsRegistered": "Envios registrados",
+    "shipmentsRegistered": "Envíos registrados",
     "total": "Total"
   },
   "navigation": {
     "alerts": "Alertas",
     "dashboard": "Dashboard",
     "history": "Historial",
-    "newShipment": "Nuevo Envio",
+    "newShipment": "Nuevo envío",
     "sensors": "Sensores",
-    "signOut": "Cerrar Sesion"
+    "signOut": "Cerrar sesión"
   },
   "roles": {
     "DRIVER": "Conductor",
-    "LOGISTICS_ADMIN": "Administrador Logistico",
+    "LOGISTICS_ADMIN": "Administrador logístico",
     "QUALITY_SUPERVISOR": "Supervisor de Calidad"
   },
   "search": {
     "alert": "Buscar alertas...",
     "history": "Buscar en historial...",
     "sensor": "Buscar sensor...",
-    "shipment": "Buscar envio..."
+    "shipment": "Buscar envío..."
   },
   "sensors": {
     "addReading": "Agregar lectura",
     "assignmentError": "No se pudo asignar el sensor. Verifica que siga disponible.",
-    "assignmentSubtitle": "Elige un envio activo para este sensor disponible.",
+    "assignmentSubtitle": "Elige un envío activo para este sensor disponible.",
     "assignmentSuccess": "Sensor asignado correctamente",
-    "assignmentTitle": "Asignar sensor a un envio",
+    "assignmentTitle": "Asignar sensor a un envío",
     "assigned": "Sensores asignados",
     "available": "Disponibles",
     "free": "Libres",
     "inUse": "En uso",
     "link": "Vincular",
     "list": "Lista de Sensores",
-    "noAssignableShipments": "No hay envios registrados o en ruta disponibles. Primero crea un envio.",
+    "noAssignableShipments": "No hay envíos registrados o en ruta disponibles. Primero crea un envío.",
     "registered": "Sensores registrados",
     "register": "Registrar Sensor",
     "confirmAssignment": "Asignar sensor",
-    "selectShipment": "Envio",
-    "selectShipmentPlaceholder": "Selecciona un envio",
+    "selectShipment": "Envío",
+    "selectShipmentPlaceholder": "Selecciona un envío",
     "saveReading": "Guardar lectura",
-    "subtitle": "Administra y vincula sensores a los envios",
-    "telemetryError": "No se pudo registrar la lectura. Verifica que el sensor este asignado.",
-    "telemetryNote": "Guardar una lectura actualiza tanto el sensor como el envio asignado.",
+    "subtitle": "Administra y vincula sensores a los envíos",
+    "telemetryError": "No se pudo registrar la lectura. Verifica que el sensor esté asignado.",
+    "telemetryNote": "Guardar una lectura actualiza tanto el sensor como el envío asignado.",
     "telemetrySuccess": "Lectura registrada correctamente",
     "telemetryTitle": "Registrar lectura del sensor",
-    "title": "Gestion de Sensores"
+    "title": "Gestión de sensores"
   },
   "severity": {
-    "CRITICAL": "Critico",
+    "CRITICAL": "Crítico",
     "WARNING": "Advertencia"
   },
   "shipment": {
     "assignedSensor": "Sensor asignado",
-    "cargoDescription": "Descripcion de la Carga",
-    "cargoPlaceholder": "Detalla el contenido del envio...",
-    "complete": "Completar envio",
-    "completedSuccess": "Envio completado correctamente.",
+    "cargoDescription": "Descripción de la carga",
+    "cargoPlaceholder": "Detalla el contenido del envío...",
+    "complete": "Completar envío",
+    "completedSuccess": "Envío completado correctamente.",
     "departureAt": "Fecha de Salida",
     "destinationPlaceholder": "Ciudad de destino",
-    "detailsTitle": "Detalles del envio",
+    "detailsTitle": "Detalles del envío",
     "driverPlaceholder": "Selecciona un conductor",
     "estimatedArrivalAt": "Llegada Estimada",
-    "noAlerts": "Este envio no tiene alertas asociadas.",
+    "noAlerts": "Este envío no tiene alertas asociadas.",
     "noSensor": "No hay un sensor asignado actualmente.",
-    "note": "Los sensores se asignaran en el siguiente paso. Primero registra la informacion basica del envio.",
-    "register": "Registrar Envio",
+    "note": "Los sensores se asignarán en el siguiente paso. Primero registra la información básica del envío.",
+    "register": "Registrar envío",
     "relatedAlerts": "Alertas relacionadas",
-    "lifecycleError": "No se pudo actualizar el estado del envio.",
-    "start": "Iniciar envio",
-    "startedSuccess": "El envio ahora esta en ruta. Puedes completarlo cuando llegue.",
-    "subtitle": "Complete todos los campos para crear un nuevo envio",
-    "title": "Registrar Nuevo Envio"
+    "lifecycleError": "No se pudo actualizar el estado del envío.",
+    "start": "Iniciar envío",
+    "startedSuccess": "El envío ahora está en ruta. Puedes completarlo cuando llegue.",
+    "subtitle": "Completa todos los campos para crear un nuevo envío",
+    "title": "Registrar nuevo envío"
   },
   "status": {
     "alert": {
@@ -174,7 +182,7 @@
     "shipment": {
       "CANCELLED": "Cancelado",
       "COMPLETED": "Completado",
-      "IN_TRANSIT": "En Ruta",
+      "IN_TRANSIT": "En ruta",
       "REGISTERED": "Registrado"
     }
   }

@@ -17,6 +17,7 @@ export class ColdtrackStore {
   private readonly sensorsSignal = signal<SensorEntity[]>([]);
   private readonly alertsSignal = signal<AlertEntity[]>([]);
   private readonly loadingSignal = signal(false);
+  private readonly loadErrorSignal = signal<string | null>(null);
 
   /** Current shipment collection. */
   readonly shipments = this.shipmentsSignal.asReadonly();
@@ -26,6 +27,8 @@ export class ColdtrackStore {
   readonly alerts = this.alertsSignal.asReadonly();
   /** Data loading state. */
   readonly loading = this.loadingSignal.asReadonly();
+  /** Last dashboard loading error. */
+  readonly loadError = this.loadErrorSignal.asReadonly();
   /** Active shipments. */
   readonly activeShipments = computed(() => this.shipmentsSignal().filter(shipment => shipment.status === 'IN_TRANSIT'));
   /** Completed shipments. */
@@ -43,15 +46,19 @@ export class ColdtrackStore {
   /** Loads dashboard data from the backend API. */
   load(): void {
     this.loadingSignal.set(true);
+    this.loadErrorSignal.set(null);
     forkJoin({
       shipments: this.api.getShipments(),
       sensors: this.api.getSensors(),
       alerts: this.api.getAlerts()
     }).pipe(finalize(() => this.loadingSignal.set(false)))
-      .subscribe(({ shipments, sensors, alerts }) => {
-        this.shipmentsSignal.set(shipments);
-        this.sensorsSignal.set(sensors);
-        this.alertsSignal.set(alerts);
+      .subscribe({
+        next: ({ shipments, sensors, alerts }) => {
+          this.shipmentsSignal.set(shipments);
+          this.sensorsSignal.set(sensors);
+          this.alertsSignal.set(alerts);
+        },
+        error: () => this.loadErrorSignal.set('app.loadError')
       });
   }
 

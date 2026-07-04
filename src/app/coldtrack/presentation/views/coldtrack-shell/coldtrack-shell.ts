@@ -46,6 +46,8 @@ export class ColdtrackShell {
   protected readonly store = inject(ColdtrackStore);
   private readonly formBuilder = inject(FormBuilder);
   private readonly translate = inject(TranslateService);
+  private readonly demoEmail = 'test@test.com';
+  private readonly demoPassword = 'password';
 
   protected readonly authMode = signal<AuthMode>('sign-in');
   protected readonly currentView = signal<ShellView>('dashboard');
@@ -70,8 +72,8 @@ export class ColdtrackShell {
   protected readonly lifecycleSuccess = signal<string | null>(null);
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
-    email: ['test@test.com', [Validators.required, Validators.email]],
-    password: ['password', Validators.required]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
   });
 
   protected readonly registerForm = this.formBuilder.nonNullable.group({
@@ -184,6 +186,14 @@ export class ColdtrackShell {
     this.authStore.signIn(this.loginForm.controls.email.value, this.loginForm.controls.password.value);
   }
 
+  /** Fills the sign-in form with the public demo account used for review sessions. */
+  protected useDemoAccount(): void {
+    this.loginForm.setValue({
+      email: this.demoEmail,
+      password: this.demoPassword
+    });
+  }
+
   /** Submits the sign-up form and creates a new backend user. */
   protected signUp(): void {
     if (this.registerForm.invalid || this.registerForm.controls.password.value !== this.registerForm.controls.confirmPassword.value) {
@@ -207,6 +217,11 @@ export class ColdtrackShell {
    */
   protected setView(view: ShellView): void {
     this.currentView.set(view);
+  }
+
+  /** Reloads operational data from the backend after a transient Render/API delay. */
+  protected retryLoad(): void {
+    this.store.load();
   }
 
   /** Creates a new shipment from the form. */

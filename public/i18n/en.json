@@ -7,6 +7,12 @@
     "exportReport": "Export report",
     "viewAll": "View all"
   },
+  "app": {
+    "loading": "Loading ColdTrack data",
+    "loadError": "We could not load the latest operational data.",
+    "retry": "Retry",
+    "serviceWakeup": "If the backend is waking up on Render, this can take a few seconds."
+  },
   "accessibility": {
     "languageSelector": "Language selector",
     "selectLanguage": "Select language"
@@ -27,6 +33,7 @@
     "createTitle": "Create Account",
     "email": "Email Address",
     "emailPlaceholder": "you@email.com",
+    "demoAccount": "Demo account",
     "forgot": "Forgot your password?",
     "fullName": "Full Name",
     "fullNamePlaceholder": "Juan Perez",
@@ -38,6 +45,7 @@
     "role": "Role",
     "signIn": "Sign In",
     "subtitle": "Shipment Management System",
+    "useDemoAccount": "Use demo account",
     "welcome": "Welcome to ColdTrack"
   },
   "dashboard": {
