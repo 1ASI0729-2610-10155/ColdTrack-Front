@@ -18,10 +18,14 @@
     "selectLanguage": "Select language"
   },
   "alerts": {
+    "acknowledge": "Acknowledge",
+    "actionError": "The alert could not be updated.",
+    "actionSuccess": "Alert updated",
     "critical": "Critical",
     "highPriority": "High priority",
     "registered": "Registered alerts",
     "requireAttention": "Require attention",
+    "resolve": "Resolve",
     "subtitle": "Monitor and manage system alerts",
     "title": "Alert System"
   },
@@ -141,7 +145,11 @@
     "telemetryNote": "Saving a reading updates both the sensor and its assigned shipment.",
     "telemetrySuccess": "Reading recorded successfully",
     "telemetryTitle": "Record sensor reading",
-    "title": "Sensor Management"
+    "title": "Sensor Management",
+    "unassign": "Unlink",
+    "unassignConfirm": "Do you want to unlink this sensor from its current shipment?",
+    "unassignError": "The sensor could not be unlinked. Verify that it is still assigned.",
+    "unassignSuccess": "Sensor unlinked successfully"
   },
   "severity": {
     "CRITICAL": "Critical",

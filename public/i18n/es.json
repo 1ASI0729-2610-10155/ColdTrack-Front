@@ -18,10 +18,14 @@
     "selectLanguage": "Seleccionar idioma"
   },
   "alerts": {
+    "acknowledge": "Reconocer",
+    "actionError": "No se pudo actualizar la alerta.",
+    "actionSuccess": "Alerta actualizada",
     "critical": "Críticas",
     "highPriority": "Alta prioridad",
     "registered": "Alertas registradas",
     "requireAttention": "Requieren atención",
+    "resolve": "Resolver",
     "subtitle": "Monitorea y gestiona alertas del sistema",
     "title": "Sistema de Alertas"
   },
@@ -141,7 +145,11 @@
     "telemetryNote": "Guardar una lectura actualiza tanto el sensor como el envío asignado.",
     "telemetrySuccess": "Lectura registrada correctamente",
     "telemetryTitle": "Registrar lectura del sensor",
-    "title": "Gestión de sensores"
+    "title": "Gestión de sensores",
+    "unassign": "Desvincular",
+    "unassignConfirm": "¿Deseas desvincular este sensor de su envío actual?",
+    "unassignError": "No se pudo desvincular el sensor. Verifica que siga asignado.",
+    "unassignSuccess": "Sensor desvinculado correctamente"
   },
   "severity": {
     "CRITICAL": "Crítico",
