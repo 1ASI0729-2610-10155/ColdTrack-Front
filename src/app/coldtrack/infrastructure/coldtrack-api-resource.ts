@@ -91,6 +91,13 @@ export class ColdtrackApiResource {
     ).pipe(map(response => ({ ...response })));
   }
 
+  /** Removes the current shipment assignment from a sensor. */
+  unassignSensor(sensorCode: string): Observable<SensorEntity> {
+    return this.http.delete<SensorResponse>(
+      `${this.baseUrl}/sensors/${encodeURIComponent(sensorCode)}/assignment`
+    ).pipe(map(response => ({ ...response })));
+  }
+
   /** Records a telemetry reading for an assigned sensor. */
   recordTelemetry(sensorCode: string, temperature: number, humidity: number): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/telemetry-readings`, {
@@ -122,5 +129,19 @@ export class ColdtrackApiResource {
   getAlerts(): Observable<AlertEntity[]> {
     return this.http.get<AlertResponse[]>(`${this.baseUrl}/alerts`)
       .pipe(map(ColdtrackAssembler.toAlertEntities));
+  }
+
+  /** Marks an active alert as acknowledged. */
+  acknowledgeAlert(alertCode: string): Observable<AlertEntity> {
+    return this.http.post<AlertResponse>(
+      `${this.baseUrl}/alerts/${encodeURIComponent(alertCode)}/acknowledgements`, {}
+    ).pipe(map(response => ({ ...response })));
+  }
+
+  /** Marks an active or acknowledged alert as resolved. */
+  resolveAlert(alertCode: string): Observable<AlertEntity> {
+    return this.http.post<AlertResponse>(
+      `${this.baseUrl}/alerts/${encodeURIComponent(alertCode)}/resolutions`, {}
+    ).pipe(map(response => ({ ...response })));
   }
 }

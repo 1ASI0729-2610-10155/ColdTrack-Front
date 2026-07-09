@@ -67,6 +67,12 @@ export class ColdtrackShell {
   protected readonly telemetryLoading = signal(false);
   protected readonly telemetryError = signal<string | null>(null);
   protected readonly telemetrySuccess = signal<string | null>(null);
+  protected readonly sensorActionLoading = signal<string | null>(null);
+  protected readonly sensorActionError = signal<string | null>(null);
+  protected readonly sensorActionSuccess = signal<string | null>(null);
+  protected readonly alertActionLoading = signal<string | null>(null);
+  protected readonly alertActionError = signal<string | null>(null);
+  protected readonly alertActionSuccess = signal<string | null>(null);
   protected readonly lifecycleLoading = signal(false);
   protected readonly lifecycleError = signal<string | null>(null);
   protected readonly lifecycleSuccess = signal<string | null>(null);
@@ -354,6 +360,47 @@ export class ColdtrackShell {
           this.closeSensorAssignment();
         },
         error: () => this.assignmentError.set('sensors.assignmentError')
+      });
+  }
+
+  /** Removes the current shipment assignment from a sensor. */
+  protected unassignSensor(sensor: SensorEntity): void {
+    const confirmation = window.confirm(this.translate.instant('sensors.unassignConfirm'));
+    if (!confirmation) {
+      return;
+    }
+
+    this.sensorActionLoading.set(sensor.id);
+    this.sensorActionError.set(null);
+    this.store.unassignSensor(sensor.id)
+      .pipe(finalize(() => this.sensorActionLoading.set(null)))
+      .subscribe({
+        next: () => this.sensorActionSuccess.set(sensor.id),
+        error: () => this.sensorActionError.set('sensors.unassignError')
+      });
+  }
+
+  /** Marks an alert as acknowledged. */
+  protected acknowledgeAlert(alert: AlertEntity): void {
+    this.alertActionLoading.set(alert.id);
+    this.alertActionError.set(null);
+    this.store.acknowledgeAlert(alert.id)
+      .pipe(finalize(() => this.alertActionLoading.set(null)))
+      .subscribe({
+        next: updatedAlert => this.alertActionSuccess.set(updatedAlert.id),
+        error: () => this.alertActionError.set('alerts.actionError')
+      });
+  }
+
+  /** Marks an alert as resolved. */
+  protected resolveAlert(alert: AlertEntity): void {
+    this.alertActionLoading.set(alert.id);
+    this.alertActionError.set(null);
+    this.store.resolveAlert(alert.id)
+      .pipe(finalize(() => this.alertActionLoading.set(null)))
+      .subscribe({
+        next: updatedAlert => this.alertActionSuccess.set(updatedAlert.id),
+        error: () => this.alertActionError.set('alerts.actionError')
       });
   }
 

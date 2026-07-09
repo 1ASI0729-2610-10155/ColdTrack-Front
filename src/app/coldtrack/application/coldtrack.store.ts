@@ -90,6 +90,14 @@ export class ColdtrackStore {
     );
   }
 
+  /** Unassigns a sensor from its current shipment and updates local state. */
+  unassignSensor(sensorCode: string): Observable<SensorEntity> {
+    return this.api.unassignSensor(sensorCode).pipe(
+      tap(updatedSensor => this.sensorsSignal.update(sensors =>
+        sensors.map(sensor => sensor.id === updatedSensor.id ? updatedSensor : sensor)))
+    );
+  }
+
   /** Records telemetry and reloads all aggregates affected by alert evaluation. */
   recordTelemetry(sensorCode: string, temperature: number, humidity: number): Observable<void> {
     return this.api.recordTelemetry(sensorCode, temperature, humidity).pipe(
@@ -117,8 +125,23 @@ export class ColdtrackStore {
     return this.api.completeShipment(shipmentCode).pipe(tap(shipment => this.replaceShipment(shipment)));
   }
 
+  /** Marks an alert as acknowledged and updates local state. */
+  acknowledgeAlert(alertCode: string): Observable<AlertEntity> {
+    return this.api.acknowledgeAlert(alertCode).pipe(tap(alert => this.replaceAlert(alert)));
+  }
+
+  /** Marks an alert as resolved and updates local state. */
+  resolveAlert(alertCode: string): Observable<AlertEntity> {
+    return this.api.resolveAlert(alertCode).pipe(tap(alert => this.replaceAlert(alert)));
+  }
+
   private replaceShipment(updatedShipment: ShipmentEntity): void {
     this.shipmentsSignal.update(shipments => shipments
       .map(shipment => shipment.id === updatedShipment.id ? updatedShipment : shipment));
+  }
+
+  private replaceAlert(updatedAlert: AlertEntity): void {
+    this.alertsSignal.update(alerts => alerts
+      .map(alert => alert.id === updatedAlert.id ? updatedAlert : alert));
   }
 }
